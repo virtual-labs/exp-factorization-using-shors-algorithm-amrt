@@ -1,20 +1,19 @@
-
-
-
-
-
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 #### 1. What is Integer Factorization?
 
 Integer factorization is the process of decomposing a composite number into its prime factors.
 
-Example:
+**Example:**
 
-15 = 3 × 5
+$$
+15 = 3 \times 5
+$$
 
 For small numbers this is simple, but for very large numbers (hundreds of digits), factorization becomes computationally difficult.
 
-Modern cryptographic systems like RSA rely on this classical difficulty.
+Modern cryptographic systems like **RSA** rely on this classical difficulty.
 
 Shor’s Algorithm provides a quantum solution to factor large integers efficiently.
 
@@ -24,15 +23,15 @@ Shor’s Algorithm provides a quantum solution to factor large integers efficien
 
 Classical factorization algorithms include:
 
-- Trial Division
-- Pollard’s Rho Algorithm
-- Number Field Sieve
+- Trial Division  
+- Pollard’s Rho Algorithm  
+- Number Field Sieve  
 
-These methods require exponential or sub-exponential time for large inputs.
+These methods require **exponential or sub-exponential time** for large inputs.
 
 As the number size increases, the required computation time increases dramatically.
 
-Quantum computing offers a polynomial-time alternative.
+Quantum computing offers a **polynomial-time alternative**.
 
 
 
@@ -40,47 +39,57 @@ Quantum computing offers a polynomial-time alternative.
 
 Shor’s Algorithm is a quantum algorithm introduced in 1994.
 
-It factors large integers efficiently by reducing the problem to a period-finding problem.
+It factors large integers efficiently by reducing the problem to a **period-finding problem**.
 
 The algorithm combines:
 
-- Quantum parallelism
-- Modular exponentiation
-- Quantum Fourier Transform (QFT)
-- Classical post-processing
+- Quantum parallelism  
+- Modular exponentiation  
+- Quantum Fourier Transform (QFT)  
+- Classical post-processing  
 
 
 
 #### 4. Core Idea: Period Finding
 
-To factor a number N:
+To factor a number $$N$$
 
-1. Choose a number a such that:
+1. Choose a number $$a$$ such that:
+   $$
    1 < a < N
+   $$
 
 2. Define the function:
-   f(x) = a^x mod N
+   $$
+   f(x) = a^x \bmod N
+   $$
 
-3. This function is periodic, meaning:
+3. This function is periodic:
+   $$
    f(x + r) = f(x)
+   $$
 
-4. The goal is to find the period r.
+4. The goal is to find the period $$r$$
 
-Once r is known, factors can be computed using:
+Once $$r$$ is known, factors can be computed using:
 
-gcd(a^(r/2) ± 1, N)
+$$
+\gcd\left(a^{r/2} \pm 1,\; N\right)
+$$
 
 
 
 #### 5. Quantum Superposition
 
-Instead of computing f(x) for each x one by one, a quantum system prepares:
+Instead of computing $$f(x)$$ for each $$x$$ one by one, a quantum system prepares:
 
-Σ |x⟩ |f(x)⟩
+$$
+\sum_{x} |x\rangle \, |f(x)\rangle
+$$
 
 This allows simultaneous evaluation of many inputs using superposition.
 
-This is known as quantum parallelism.
+This is known as **quantum parallelism**.
 
 
 
@@ -88,7 +97,9 @@ This is known as quantum parallelism.
 
 The quantum circuit computes:
 
-|x⟩ |0⟩ → |x⟩ |a^x mod N⟩
+$$
+|x\rangle \, |0\rangle \;\longrightarrow\; |x\rangle \, |a^x \bmod N\rangle
+$$
 
 This step encodes the periodic structure into the quantum state.
 
@@ -100,7 +111,7 @@ The QFT is the quantum version of the Discrete Fourier Transform.
 
 It transforms the periodic quantum state into a frequency representation.
 
-The peaks in this representation reveal the period r.
+The peaks in this representation reveal the period $$r$$
 
 
 
@@ -108,10 +119,11 @@ The peaks in this representation reveal the period r.
 
 After applying QFT:
 
-- The system is measured
-- The result provides information about the period
-- Classical continued fraction methods are used to compute r
-- Finally, gcd(a^(r/2) ± 1, N) gives the non-trivial factors
+- The system is measured  
+- The result provides information about the period  
+- Classical continued fraction methods are used to compute $$r$$  
+- Finally, the factors are obtained using:
 
-
-
+$$
+\gcd\left(a^{r/2} \pm 1,\; N\right)
+$$
