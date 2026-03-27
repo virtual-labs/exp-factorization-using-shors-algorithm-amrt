@@ -1,3 +1,10 @@
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    }
+  };
+</script>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
@@ -5,11 +12,7 @@
 
 Integer factorization is the process of decomposing a composite number into its prime factors.
 
-**Example:**
-
-$$
-15 = 3 \times 5
-$$
+**Example:** $15 = 3 \times 5$
 
 For small numbers this is simple, but for very large numbers (hundreds of digits), factorization becomes computationally difficult.
 
@@ -52,40 +55,23 @@ The algorithm combines:
 
 #### 4. Core Idea: Period Finding
 
-To factor a number $$N$$
+To factor a number $N$
 
-1. Choose a number $$a$$ such that:
-   $$
-   1 < a < N
-   $$
+1. Choose a number $a$ such that: $1 < a < N$
 
-2. Define the function:
-   $$
-   f(x) = a^x \bmod N
-   $$
+2. Define the function: $f(x) = a^x \bmod N$
 
-3. This function is periodic:
-   $$
-   f(x + r) = f(x)
-   $$
+3. This function is periodic: $f(x + r) = f(x)$
 
-4. The goal is to find the period $$r$$
+4. The goal is to find the period $r$
 
-Once $$r$$ is known, factors can be computed using:
-
-$$
-\gcd\left(a^{r/2} \pm 1,\; N\right)
-$$
+Once $r$ is known, factors can be computed using: $\gcd\left(a^{r/2} \pm 1,\; N\right)$
 
 
 
 #### 5. Quantum Superposition
 
-Instead of computing $$f(x)$$ for each $$x$$ one by one, a quantum system prepares:
-
-$$
-\sum_{x} |x\rangle \, |f(x)\rangle
-$$
+Instead of computing $f(x)$ for each $x$ one by one, a quantum system prepares: $\sum_{x} |x\rangle \, |f(x)\rangle$
 
 This allows simultaneous evaluation of many inputs using superposition.
 
@@ -95,11 +81,7 @@ This is known as **quantum parallelism**.
 
 #### 6. Modular Exponentiation
 
-The quantum circuit computes:
-
-$$
-|x\rangle \, |0\rangle \;\longrightarrow\; |x\rangle \, |a^x \bmod N\rangle
-$$
+The quantum circuit computes: $|x\rangle \, |0\rangle \;\longrightarrow\; |x\rangle \, |a^x \bmod N\rangle$
 
 This step encodes the periodic structure into the quantum state.
 
@@ -111,7 +93,7 @@ The QFT is the quantum version of the Discrete Fourier Transform.
 
 It transforms the periodic quantum state into a frequency representation.
 
-The peaks in this representation reveal the period $$r$$
+The peaks in this representation reveal the period $r$
 
 
 
@@ -121,9 +103,5 @@ After applying QFT:
 
 - The system is measured  
 - The result provides information about the period  
-- Classical continued fraction methods are used to compute $$r$$  
-- Finally, the factors are obtained using:
-
-$$
-\gcd\left(a^{r/2} \pm 1,\; N\right)
-$$
+- Classical continued fraction methods are used to compute $r$  
+- Finally, the factors are obtained using: $\gcd\left(a^{r/2} \pm 1,\; N\right)$
