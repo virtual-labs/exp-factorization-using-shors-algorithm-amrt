@@ -1,20 +1,22 @@
-
-
-
-
-
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 #### 1. What is Integer Factorization?
 
 Integer factorization is the process of decomposing a composite number into its prime factors.
 
-Example:
-
-15 = 3 × 5
+**Example:** $15 = 3 \times 5$
 
 For small numbers this is simple, but for very large numbers (hundreds of digits), factorization becomes computationally difficult.
 
-Modern cryptographic systems like RSA rely on this classical difficulty.
+Modern cryptographic systems like **RSA** rely on this classical difficulty.
 
 Shor’s Algorithm provides a quantum solution to factor large integers efficiently.
 
@@ -24,15 +26,15 @@ Shor’s Algorithm provides a quantum solution to factor large integers efficien
 
 Classical factorization algorithms include:
 
-- Trial Division
-- Pollard’s Rho Algorithm
-- Number Field Sieve
+- Trial Division  
+- Pollard’s Rho Algorithm  
+- Number Field Sieve  
 
-These methods require exponential or sub-exponential time for large inputs.
+These methods require **exponential or sub-exponential time** for large inputs.
 
 As the number size increases, the required computation time increases dramatically.
 
-Quantum computing offers a polynomial-time alternative.
+Quantum computing offers a **polynomial-time alternative**.
 
 
 
@@ -40,78 +42,48 @@ Quantum computing offers a polynomial-time alternative.
 
 Shor’s Algorithm is a quantum algorithm introduced in 1994.
 
-It factors large integers efficiently by reducing the problem to a period-finding problem.
+It factors large integers efficiently by reducing the problem to a **period-finding problem**.
 
 The algorithm combines:
 
-- Quantum parallelism
-- Modular exponentiation
-- Quantum Fourier Transform (QFT)
-- Classical post-processing
+- Quantum parallelism  
+- Modular exponentiation  
+- Quantum Fourier Transform (QFT)  
+- Classical post-processing  
 
 
 
-#### 4. Core Idea: Period Finding
+#### 4. The Reduction: Factoring to Period Finding
 
-To factor a number N:
+Shor’s key insight was that factoring is not a standalone hard problem; it can be **reduced** mathematically to the problem of finding the period of a function.
 
-1. Choose a number a such that:
-   1 < a < N
+1. **Why Period Finding?** Period finding is about identifying repeating patterns. In modular arithmetic, the sequence $a^x \bmod N$ eventually repeats. This repetition occurs because there are only $N$ possible values for the result.
+2. **The "Bridge":** The number theory identity $(a^{r/2} - 1)(a^{r/2} + 1) \equiv 0 \pmod N$ serves as a bridge. It connects the periodic repetition ($r$) of exponents to the physical divisors of $N$. 
+3. **Hard for Classical, Easy for Quantum:** Classically, finding $r$ requires checking many values of $x$ (often trillions for large $N$), which is why RSA is secure. Quantum computers, however, don't "check" one by one; they process the entire pattern at once.
 
-2. Define the function:
-   f(x) = a^x mod N
+#### 5. Quantum Parallelism: Processing the Whole Pattern
 
-3. This function is periodic, meaning:
-   f(x + r) = f(x)
+Quantum parallelism is often misunderstood as simply "trying all possibilities at once." In Shor’s algorithm, it is used specifically to **encode a pattern** into a single quantum state.
 
-4. The goal is to find the period r.
-
-Once r is known, factors can be computed using:
-
-gcd(a^(r/2) ± 1, N)
-
-
-
-#### 5. Quantum Superposition
-
-Instead of computing f(x) for each x one by one, a quantum system prepares:
-
-Σ |x⟩ |f(x)⟩
-
-This allows simultaneous evaluation of many inputs using superposition.
-
-This is known as quantum parallelism.
+- **Creating the State:** We use two registers. The first starts in a superposition of all possible inputs $|x\rangle$. When we perform modular exponentiation, we get the state:
+  $\sum_{x} |x\rangle \, |a^x \bmod N\rangle$
+- **The Measurement Effect:** If we were to measure the second register and see a value $y$, the first register would "collapse" into a superposition of only those $x$ values where $a^x \bmod N = y$.
+  Example: If $f(x)$ repeats every 4 steps ($r=4$), and we see $y$, the first register becomes $|x_0\rangle + |x_0+4\rangle + |x_0+8\rangle + \dots$
+- **Capturing the Period:** This resulting state now contains the period $r$ hidden within the spacing between the $x$ values. Quantum parallelism allows us to create this periodic "grid" across all possible inputs simultaneously.
 
 
 
-#### 6. Modular Exponentiation
+#### 6. Quantum Fourier Transform (QFT): Reading the Spacing
 
-The quantum circuit computes:
+The most difficult part is reading the period $r$ out of the quantum state. We cannot just "look" at the register because measurement only gives us one random $x$ value, which tells us nothing about the spacing.
 
-|x⟩ |0⟩ → |x⟩ |a^x mod N⟩
+- **Constructive Interference:** The QFT acts like a prism for the quantum state. It uses **interference** to cancel out all the "wrong" answers and amplify the "right" ones.
+- **From Time to Frequency:** Just as a musical ear identifies a pitch by its frequency (how often waves repeat), the QFT converts the spacing $r$ in our register into a specific frequency peak. 
+- **The Result:** After QFT, the register is most likely to be in a state representing a value like $k/r$. Measuring this allows us to use classical math (continued fractions) to solve for the exact integer $r$.
 
-This step encodes the periodic structure into the quantum state.
+#### 7. Summary of the Workflow
 
-
-
-#### 7. Quantum Fourier Transform (QFT)
-
-The QFT is the quantum version of the Discrete Fourier Transform.
-
-It transforms the periodic quantum state into a frequency representation.
-
-The peaks in this representation reveal the period r.
-
-
-
-#### 8. Measurement and Classical Post-Processing
-
-After applying QFT:
-
-- The system is measured
-- The result provides information about the period
-- Classical continued fraction methods are used to compute r
-- Finally, gcd(a^(r/2) ± 1, N) gives the non-trivial factors
-
-
-
+1. **Classical Reduction:** Turn a factoring problem into a period-finding problem ($a^x \bmod N$).
+2. **Quantum Parallelism:** Create a superposition of $a^x \bmod N$ for all $x$ simultaneously.
+3. **Quantum Interference (QFT):** Collimate the superposition so that the period $r$ becomes measurable.
+4. **Classical Post-Processing:** Use the measured $r$ to calculate $\gcd(a^{r/2} \pm 1, N)$ and find the prime factors.
