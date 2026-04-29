@@ -50,16 +50,50 @@ The algorithm combines:
 - Modular exponentiation  
 - Quantum Fourier Transform (QFT)  
 - Classical post-processing  
-
-
-
 #### 4. The Reduction: Factoring to Period Finding
 
 Shor’s key insight was that factoring is not a standalone hard problem; it can be **reduced** mathematically to the problem of finding the period of a function.
 
-1. **Why Period Finding?** Period finding is about identifying repeating patterns. In modular arithmetic, the sequence $a^x \bmod N$ eventually repeats. This repetition occurs because there are only $N$ possible values for the result.
-2. **The "Bridge":** The number theory identity $(a^{r/2} - 1)(a^{r/2} + 1) \equiv 0 \pmod N$ serves as a bridge. It connects the periodic repetition ($r$) of exponents to the physical divisors of $N$. 
-3. **Hard for Classical, Easy for Quantum:** Classically, finding $r$ requires checking many values of $x$ (often trillions for large $N$), which is why RSA is secure. Quantum computers, however, don't "check" one by one; they process the entire pattern at once.
+1. **Why Period Finding?**  
+   Period finding is about identifying repeating patterns. In modular arithmetic, the sequence $a^x \bmod N$ eventually repeats because there are only a finite number of possible values.
+
+2. **How Period Leads to Factors (Key Idea)**  
+   If $r$ is the period, then:
+   $$
+   a^r \equiv 1 \pmod N
+   $$
+
+   This implies:
+   $$
+   a^r - 1 \equiv 0 \pmod N
+   $$
+
+   Which can be factorized as:
+   $$
+   (a^{r/2} - 1)(a^{r/2} + 1) \equiv 0 \pmod N
+   $$
+
+   This means that $N$ divides the product $(a^{r/2} - 1)(a^{r/2} + 1)$.  
+   If neither term is a multiple of $N$, then each term must share a **non-trivial factor** with $N$.
+
+   Therefore, we compute:
+   $$
+   \gcd(a^{r/2} - 1, N), \quad \gcd(a^{r/2} + 1, N)
+   $$
+
+   These values reveal the prime factors of $N$.
+
+3. **The "Bridge" Insight**  
+   The period $r$ acts as a bridge between exponential behavior and factorization. Instead of factoring $N$ directly (which is hard), we extract hidden structure from modular arithmetic and use it to recover the factors.
+
+4. **Important Conditions**  
+   - $r$ must be **even**  
+   - $a^{r/2} \not\equiv -1 \pmod N$  
+
+   If these conditions are not satisfied, the result gives trivial factors (1 or $N$), and a different value of $a$ must be chosen.
+
+5. **Hard for Classical, Easy for Quantum**  
+   Classically, finding $r$ requires checking many values of $x$, which becomes infeasible for large $N$. Quantum computers exploit superposition and interference to extract the period efficiently.
 
 #### 5. Quantum Parallelism: Processing the Whole Pattern
 
